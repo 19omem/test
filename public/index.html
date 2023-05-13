@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill test: HiQ</title>
+</head>
+
+<body>
+    <div style="margin: 20px;">
+        <input type="file" id="fileInput" name="textFile">
+        <button id="uploadButton">upload</button>
+        <div id="errMsg" style="color: red;"></div>
+    </div>
+
+    <div id="fileContent" style="margin: 20px;"></div>
+    <script>
+
+        async function uploadTextFile() {
+            const file = document.querySelector('input[type="file"]').files[0]
+            let errMsgEl = document.getElementById('errMsg')
+            errMsgEl.innerText = ''
+
+            if (!file) {
+                errMsgEl.innerText = 'Please, select a file!'
+                return
+            }
+
+            const formData = new FormData()
+            formData.append("title", "Text file")
+            formData.append('textFile', file)
+
+            try {
+                const response = await fetch("http://localhost:4000/", {
+                    method: "POST",
+                    body: formData,
+                });
+                const result = await response.json()
+                document.getElementById('fileContent').innerText = result.fileContent
+            } catch (error) {
+                console.error("Error: ", error)
+            }
+        }
+
+        const el = document.getElementById("uploadButton")
+        el.addEventListener("click", function (e) { uploadTextFile() }, false)
+
+    </script>
+</body>
+
+</html>
